@@ -32,3 +32,6 @@ HEADERS += \
 
 FORMS += \
         widget.ui
+
+RESOURCES += \
+    res.qrc
