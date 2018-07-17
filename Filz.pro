@@ -26,11 +26,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
         main.cpp \
         widget.cpp \
-    dialogloading.cpp
+    dialogloading.cpp \
+    mythread.cpp
 
 HEADERS += \
         widget.h \
-    dialogloading.h
+    dialogloading.h \
+    mythread.h
 
 FORMS += \
         widget.ui \

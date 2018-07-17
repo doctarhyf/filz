@@ -14,6 +14,7 @@ class DialogLoading : public QDialog
 public:
     explicit DialogLoading(QWidget *parent = 0);
     ~DialogLoading();
+    void setProgress(int count, int total);
 
 private:
     Ui::DialogLoading *ui;

@@ -1,5 +1,6 @@
 #include "widget.h"
 #include "ui_widget.h"
+#include "mythread.h"
 
 Widget::Widget(QWidget *parent) :
     QWidget(parent),
@@ -7,8 +8,11 @@ Widget::Widget(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    mythread = new MyThread();
+
     dialogLoading = new DialogLoading(this);
     dialogLoading->setModal(true);
+    dialogLoading->hide();
 
     dirPath = "C:\\Downloads\\test";
 
@@ -19,6 +23,10 @@ Widget::Widget(QWidget *parent) :
     loadDirPath();
 
     ui->lineEdit->setText(dirPath);
+
+    connect(mythread, SIGNAL(onFileCopyFinished()), this, SLOT(onFileCopyFinished()));
+    connect(mythread, SIGNAL(onProgress(int,int)), this, SLOT(onProgress(int,int)));
+    connect(mythread, SIGNAL(errorCopyingFile(QString)), this, SLOT(onErrorCopyingFile(QString)));
 
 
 
@@ -42,6 +50,7 @@ void Widget::on_pushButton_clicked()
 void Widget::loadDirPath()
 {
 
+    dialogLoading->setProgress(0,0);
     dialogLoading->show();
     ui->listView->setRootIndex(fileSysModel->index(dirPath));
     loadExts();
@@ -107,26 +116,32 @@ void Widget::on_lineEdit_returnPressed()
 
 void Widget::loadExts()
 {
-    QFile file("exts.txt");
-    if(file.open(QIODevice::ReadWrite )){
+    //QFile file("exts.txt");
+    /*if(file.open(QIODevice::ReadWrite )){
         QFileInfo info(file);
         //qDebug() << "EXT file : " << info.absoluteFilePath();
 
-        QTextStream ts(&file);
-        QString extsData = ts.readAll();
+        QTextStream ts(&file);*/
+        QString extsData = ui->plainTextEdit->toPlainText();
 
-        extsSplits = extsData.split("\r\n");
+        //qDebug() << "Data : " << extsData;
+
+        //return;
+
+
+
+        extsSplits = extsData.split("\n");
         extsSplits.removeLast();
 
-        ui->labelExts->setText(extsData);
+        //ui->labelExts->setText(extsData);
 
 
 
 
-     }else{
+     /*}else{
 
         QMessageBox::critical(this,"Error creating exts file", "The exts file could not be created!");
-     }
+     }*/
 
     dialogLoading->hide();
 }
@@ -139,82 +154,34 @@ void Widget::on_pushButtonSort_clicked()
 void Widget::sort()
 {
 
+    int number;
+    int randomValue = qrand() % number;
+
+    QString rand = QString::number(randomValue);
+
+    QString tokken = QInputDialog::getText(this, "Confirm sorting", "Type in : "
+                                                   "<strong>" + rand + "</strong>");
+
+    if(tokken == rand ){
+
     dialogLoading->show();
     foldersHash.clear();
 
-    for(int i = 0; i < extsSplits.length(); i++){
-        QStringList folderExts = extsSplits.at(i).split(",");
-        QString dirName = folderExts.at(0);
-        QString extsStr = folderExts.at(1);
-        QStringList extsList = extsStr.split(" ");
+    mythread->setDirPath(dirPath);
+    mythread->setExtsSplits(extsSplits);
+    mythread->setFoldersHash(foldersHash);
+    mythread->setRemoveFilesAfterSort(ui->checkBoxRemFiles->isChecked());
+    mythread->start();
 
-        //QString dirName = dirName;
-
-        QString dp = dirPath + "\\" + dirName;
-        QDir dir(dirName);
-
-        if(!dir.exists()){
-            dir.mkpath(dp);
-        }
-
-
-        foldersHash.insert(dirName, extsList);
+    }else{
+        QMessageBox::warning(this, "Tokken error", "The tokken was wrong, please try again.");
     }
 
-    qDebug() << foldersHash;
-
-    QDir dir(dirPath);
-
-    QFileInfoList list = dir.entryInfoList();
 
 
-
-    foreach (QFileInfo fileInfo, list) {
-
-       // qDebug() << "File : " << fileInfo.absoluteFilePath();
-        if(!fileInfo.isDir()){
-            QFile file(fileInfo.absoluteFilePath());
-
-            QStringList splits = file.fileName().split(".");
-            QString realExt = splits[splits.length() - 1];
-            QString folder = getFileFolder(realExt);
-
-            QStringList pathSplits = file.fileName().split("/");
-            QString fname = pathSplits.at(pathSplits.size() - 1);
-
-            pathSplits.removeLast();
-            QString newPath = pathSplits.join("/") + "/" + folder + "/";
-
-
-
-
-
-
-            if(file.open(QIODevice::ReadWrite)){
-
-                newPath += fname;
-                QFile nfile(newPath);
-
-                if(nfile.open(QIODevice::ReadWrite)){
-                    nfile.write(file.readAll());
-
-                }else{
-                    qDebug() << "Cant create file : " << newPath;
-                }
-                nfile.flush();
-                nfile.close();
-
-
-                file.remove();
-                //qDebug() << "new path : " << newPath <<  ", file name : " << fname <<  ", real ext : " << realExt << ", folder : " << folder;
-            }
-
-            file.close();
-        }
-    }
-
-    dialogLoading->hide();
 }
+
+
 
 
 QString Widget::getFileFolder(const QString &ext)
@@ -233,4 +200,25 @@ QString Widget::getFileFolder(const QString &ext)
     }
 
     return folder;
+}
+
+void Widget::onFileCopyFinished()
+{
+    qDebug() << "copy finished!";
+
+    QMessageBox::information(this, "Sort Complete", "The sorting has been completed!");
+    dialogLoading->hide();
+}
+
+void Widget::onProgress(int count, int total)
+{
+    qDebug() << "Count : " << count << ", total : " << total;
+    dialogLoading->setProgress(count, total);
+
+}
+
+void Widget::onErrorCopyingFile(QString newFilePath)
+{
+    qDebug() << "Error copying to : " << newFilePath;
+    QMessageBox::critical(this, "Error copying file", "Error while copying : <strong>" + newFilePath + "</strong>");
 }

@@ -9,7 +9,9 @@
 #include <QFileSystemModel>
 #include <QMessageBox>
 #include <QTableWidgetItem>
+#include "mythread.h"
 #include "dialogloading.h"
+#include <QInputDialog>
 
 namespace Ui {
 class Widget;
@@ -33,6 +35,7 @@ private slots:
     void on_pushButtonSort_clicked();
 
 private:
+
     void sort();
     void loadExts();
     void loadDirPath();
@@ -43,6 +46,12 @@ private:
     QFileSystemModel *fileSysModel;
     QStringList extsSplits;
     DialogLoading* dialogLoading;
+    MyThread *mythread;
+
+public slots:
+    void onFileCopyFinished();
+    void onProgress(int count,int total);
+    void onErrorCopyingFile(QString newFilePath);
 
 };
 
