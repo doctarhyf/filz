@@ -154,7 +154,9 @@ void Widget::on_pushButtonSort_clicked()
 void Widget::sort()
 {
 
-    int number;
+
+
+    int number = 100000;
     int randomValue = qrand() % number;
 
     QString rand = QString::number(randomValue);
@@ -162,7 +164,10 @@ void Widget::sort()
     QString tokken = QInputDialog::getText(this, "Confirm sorting", "Type in : "
                                                    "<strong>" + rand + "</strong>");
 
-    if(tokken == rand ){
+
+
+    if(tokken == rand && tokken != ""){
+
 
     dialogLoading->show();
     foldersHash.clear();
@@ -172,6 +177,8 @@ void Widget::sort()
     mythread->setFoldersHash(foldersHash);
     mythread->setRemoveFilesAfterSort(ui->checkBoxRemFiles->isChecked());
     mythread->start();
+
+        qDebug() << "tokken : " << tokken;
 
     }else{
         QMessageBox::warning(this, "Tokken error", "The tokken was wrong, please try again.");
