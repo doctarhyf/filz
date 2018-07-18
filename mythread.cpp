@@ -20,6 +20,13 @@ void MyThread::run()
 {
 
 
+    QDate date = QDate::currentDate();
+    QString bcpFileName = date.toString().replace(" ","_") + ".txt";
+
+    QFile bcpFile(bcpFileName);
+
+    bool bcpOpened = bcpFile.open(QIODevice::ReadWrite);
+
     for(int i = 0; i < extsSplits.length(); i++){
             QStringList folderExts = extsSplits.at(i).split(",");
             QString dirName = folderExts.at(0);
@@ -50,10 +57,22 @@ void MyThread::run()
 
             if(!info.isDir()){
                 numFilesTotal++;
+
+                qDebug() << "DA FILE : " << info.filePath();
+
+                if(bcpOpened){
+                    QTextStream ts(&bcpFile);
+
+                    ts << "Path : " << info.absoluteFilePath() << "," << 0x0 ;
+                }
+
+
             }
+
+
         }
 
-
+        bcpFile.close();
 
         qDebug() << "Total File(s) : " << numFilesTotal;
 
@@ -119,7 +138,11 @@ void MyThread::run()
                 }
 
                 file.close();
+
+
             }
+
+
         }
 
         //emit onFileCopyFinished;
