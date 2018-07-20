@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
         <file>img/ic_folder.png</file>
-        <file>img/ic_raw.png</file>
     </qresource>
 </RCC>
