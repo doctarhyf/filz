@@ -104,6 +104,9 @@ void MyThread::run()
                     QFile nfile(newPath);
 
                     if(nfile.open(QIODevice::ReadWrite)){
+
+                        emit onNewCurrentFileName(newPath);
+
                         nfile.write(file.readAll());
 
                     }else{
@@ -126,6 +129,7 @@ void MyThread::run()
 
 
                     emit onProgress(numFilesCopied, numFilesTotal);
+
                     if(numFilesCopied == numFilesTotal){
                         emit onFileCopyFinished();
                         numFilesCopied = numFilesTotal = 0;

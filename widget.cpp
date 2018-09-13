@@ -27,7 +27,7 @@ Widget::Widget(QWidget *parent) :
     connect(mythread, SIGNAL(onFileCopyFinished()), this, SLOT(onFileCopyFinished()));
     connect(mythread, SIGNAL(onProgress(int,int)), this, SLOT(onProgress(int,int)));
     connect(mythread, SIGNAL(errorCopyingFile(QString)), this, SLOT(onErrorCopyingFile(QString)));
-
+    connect(mythread, SIGNAL(onNewCurrentFileName(QString)), dialogLoading, SLOT(onCurrentFileNameChanged(QString)));
 
 
 

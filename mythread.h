@@ -42,6 +42,7 @@ signals:
     void onFileCopyFinished();
     void onProgress(int count, int total);
     void errorCopyingFile(const QString& newFilePath);
+    void onNewCurrentFileName(const QString& newCurrentFileName);
 
 protected:
 

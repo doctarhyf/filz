@@ -50,7 +50,7 @@
          <item>
           <widget class="QCheckBox" name="checkBoxRemFiles">
            <property name="text">
-            <string>Remove files after sort</string>
+            <string>Move files, don't copy</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -79,10 +79,11 @@
           <string>VIDEOS,mp4 flv wmv
 AUDIO,mp3
 SOFTWARE,exe
-ARCHIVES,zip dmg
+ARCHIVES,zip dmg rar iso
 IMAGES,jpg png
 OTHER, 
-</string>
+BOOKS,pdf epub
+OFFICE,xls xlsx doc docx</string>
          </property>
         </widget>
        </item>

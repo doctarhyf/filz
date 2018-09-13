@@ -2,6 +2,7 @@
 #define DIALOGLOADING_H
 
 #include <QDialog>
+#include <QtDebug>
 
 namespace Ui {
 class DialogLoading;
@@ -18,6 +19,10 @@ public:
 
 private:
     Ui::DialogLoading *ui;
+    QString currentFileName;
+
+public slots:
+    void onCurrentFileNameChanged(QString newCurrentFileName);
 };
 
 #endif // DIALOGLOADING_H
