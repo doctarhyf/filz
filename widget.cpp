@@ -14,7 +14,7 @@ Widget::Widget(QWidget *parent) :
     dialogLoading->setModal(true);
     dialogLoading->hide();
 
-    dirPath = "C:\\Downloads\\test";
+    dirPath = QDir::homePath();
 
 
     fileSysModel = new QFileSystemModel;
