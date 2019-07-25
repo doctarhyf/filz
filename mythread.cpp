@@ -35,7 +35,7 @@ void MyThread::run()
 
             //QString dirName = dirName;
 
-            QString dp = dirPath + "\\" + dirName;
+            QString dp = dirPath + QDir::separator() + dirName;
             QDir dir(dirName);
 
             if(!dir.exists()){
@@ -87,11 +87,11 @@ void MyThread::run()
                 QString realExt = splits[splits.length() - 1];
                 QString folder = getFileFolder(realExt);
 
-                QStringList pathSplits = file.fileName().split("/");
+                QStringList pathSplits = file.fileName().split(QDir::separator());
                 QString fname = pathSplits.at(pathSplits.size() - 1);
 
                 pathSplits.removeLast();
-                QString newPath = pathSplits.join("/") + "/" + folder + "/";
+                QString newPath = pathSplits.join(QDir::separator()) + QDir::separator() + folder + QDir::separator();
 
 
 

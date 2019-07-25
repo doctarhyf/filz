@@ -7,5 +7,8 @@ int main(int argc, char *argv[])
     Widget w;
     w.show();
 
+
+    qDebug() << QDir::separator();
+
     return a.exec();
 }
